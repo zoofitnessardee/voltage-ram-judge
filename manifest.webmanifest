@@ -1,0 +1,16 @@
+{
+  "name": "Voltage RAM Thruster Judge",
+  "short_name": "Voltage Judge",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#080a0a",
+  "theme_color": "#080a0a",
+  "icons": [
+    {
+      "src": "voltage-icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
