@@ -32,7 +32,7 @@ function judge(p,now){
    // Learn a standing reference while knees are straight and hips are above knees.
    if(kneeAvg>158&&gap>.08){baselineGap=baselineGap===null?gap:baselineGap*.93+gap*.07;baselineHeight=height}
    const threshold=$('depth').value==='below'?.025:.055;
-   deep=baselineGap!==null && gap<=threshold && kneeAvg<137;
+   deep=(baselineGap!==null && gap<=threshold && kneeAvg<150) || kneeAvg<105;
    standing=kneeAvg>155;
    const armOK=(s,e,w)=>a(w).y<a(s).y-.07&&a(e).y<a(s).y-.015&&angle(a(s),a(e),a(w))>148;
    overhead=armOK(11,13,15)&&armOK(12,14,16);
