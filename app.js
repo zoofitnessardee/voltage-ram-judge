@@ -87,3 +87,44 @@ $('cameraBtn').onclick=camera;$('sessionBtn').onclick=()=>{if(!session){reset();
 if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
 
 $('viewMode').onchange=()=>{phase='ready';baselineGap=null;lowSince=0;lockedSince=0;say($('viewMode').value==='front'?'Front view: face camera, stand tall to calibrate. Depth is an estimate.':'Side view: position full body side-on.');};
+
+/* VOLTAGE CAMERA START BUTTON */
+const voltageStartButton = document.getElementById('sessionBtn');
+const voltageCameraStage = document.querySelector('.stage');
+
+if (voltageStartButton && voltageCameraStage) {
+  voltageCameraStage.appendChild(voltageStartButton);
+
+  voltageStartButton.style.cssText = `
+    position:absolute;
+    bottom:85px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:100;
+    width:min(80%,320px);
+    padding:18px;
+    font-size:20px;
+    font-weight:900;
+    border-radius:14px;
+    background:#c5ef38;
+    color:#101510;
+    cursor:pointer;
+    box-shadow:0 6px 24px rgba(0,0,0,.5);
+  `;
+
+  const voltageUpdateStartButton = () => {
+    voltageStartButton.style.display = session ? 'none' : 'block';
+  };
+
+  voltageStartButton.addEventListener('click', () => {
+    voltageUpdateStartButton();
+  });
+
+  const voltageOriginalResetForButton = reset;
+  reset = function() {
+    voltageOriginalResetForButton();
+    voltageUpdateStartButton();
+  };
+
+  voltageUpdateStartButton();
+}
