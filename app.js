@@ -33,8 +33,8 @@ function judge(p,now){
    if(kneeAvg>158&&gap>.08){baselineGap=baselineGap===null?gap:baselineGap*.93+gap*.07;baselineHeight=height}
    const threshold=$('depth').value==='below'?.025:.055;
    deep=(baselineGap!==null && gap<=threshold && kneeAvg<150) || kneeAvg<105;
-   standing=kneeAvg>155;
-   const armOK=(s,e,w)=>a(w).y<a(s).y-.07&&a(e).y<a(s).y-.015&&angle(a(s),a(e),a(w))>148;
+   standing=kneeAvg>145;
+   const armOK=(s,e,w)=>a(w).y<a(s).y-.07&&a(e).y<a(s).y-.015&&angle(a(s),a(e),a(w))>130;
    overhead=armOK(11,13,15)&&armOK(12,14,16);
    detail=`FRONT · knees ${Math.round(kneeAvg)}° · ${baselineGap===null?'stand tall to calibrate':deep?'DEPTH ESTIMATE OK':'depth pending'} · ${overhead?'BOTH ARMS UP':'lockout pending'}`;
  }else{
