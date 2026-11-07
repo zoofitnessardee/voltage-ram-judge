@@ -5,7 +5,7 @@ const $=id=>document.getElementById(id);let pose,stream,active=false,session=fal
 const video=$('video'),canvas=$('canvas'),ctx=canvas.getContext('2d');
 function say(s){$('status').textContent=s}function log(kind,detail){events.push({time:new Date().toISOString(),seconds:Math.round(elapsed/1000),kind,detail});$('log').innerHTML=events.slice(-15).reverse().map(e=>`<div>${e.seconds}s · ${e.kind} · ${e.detail}</div>`).join('')}
 function beep(ok){if(!$('sound').checked)return;try{const C=window.AudioContext||window.webkitAudioContext;const ac=new C(),o=ac.createOscillator(),g=ac.createGain();o.type='sine';o.frequency.value=ok?880:320;g.gain.value=.06;o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+.12);o.onended=()=>ac.close()}catch{}}
-function count(){reps++;$('reps').textContent=reps;log('valid','depth + overhead lockout');beep(true);if(reps>=Number($('target').value)){say('Target complete!');stopSession()}else say('GOOD REP — '+reps)}
+function count(){reps++;$('reps').textContent=reps;log('valid','depth + overhead lockout');beep(true);if(reps>=Number($('target').value)){ say('Target complete!'); const finishTime = $('timer').textContent; const finishTarget = Number($('target').value);  const finish = document.createElement('div'); finish.id = 'voltageFinish'; finish.style.cssText = 'position:fixed;inset:0;z-index:99999;background:#07110b;color:white;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;box-sizing:border-box;font-family:Arial,sans-serif';  finish.innerHTML = `   <div style="font-size:64px">⚡</div>   <div style="color:#c5ef38;font-size:clamp(32px,8vw,70px);font-weight:900">     ${finishTarget} REPS COMPLETE!   </div>   <div style="font-size:clamp(20px,5vw,32px);margin-top:16px">     VOLTAGE FINISHER   </div>   <div style="font-size:clamp(28px,7vw,48px);font-weight:bold;margin-top:24px">     FINAL TIME: ${finishTime}   </div> `;  document.getElementById('voltageFinish')?.remove(); document.body.appendChild(finish);  setTimeout(() => finish.remove(), 20000);;stopSession()}else say('GOOD REP — '+reps)}
 function fault(reason){noReps++;$('noReps').textContent=noReps;log('suspected no-rep',reason);beep(false);say('CHECK REP — '+reason)}
 function stopSession(){session=false;$('sessionBtn').textContent='Start session';log('session','stopped')}
 function reset(){flashSquatUntil=0;flashPressUntil=0;prevDeep=false;prevOverhead=false;baselineGap=null;baselineHeight=null;reps=0;noReps=0;elapsed=0;startMs=0;phase='ready';squatSeen=false;lastCount=0;lastFault=0;events=[];$('reps').textContent='0';$('noReps').textContent='0';$('timer').textContent='00:00';$('log').textContent='No events yet.';say('Ready to start')}
@@ -87,67 +87,3 @@ $('cameraBtn').onclick=camera;$('sessionBtn').onclick=()=>{if(!session){reset();
 if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
 
 $('viewMode').onchange=()=>{phase='ready';baselineGap=null;lowSince=0;lockedSince=0;say($('viewMode').value==='front'?'Front view: face camera, stand tall to calibrate. Depth is an estimate.':'Side view: position full body side-on.');};
-
-/* VOLTAGE 60-REP FINISH CELEBRATION */
-let voltageFinishTimer = null;
-
-const voltageFinishScreen = document.createElement('div');
-voltageFinishScreen.style.cssText = `
-  display:none;
-  position:fixed;
-  inset:0;
-  z-index:99999;
-  background:rgba(5,12,8,.96);
-  color:white;
-  align-items:center;
-  justify-content:center;
-  flex-direction:column;
-  text-align:center;
-  padding:24px;
-  box-sizing:border-box;
-  font-family:Arial,sans-serif;
-`;
-
-voltageFinishScreen.innerHTML = `
-  <div style="color:#C5EF38;font-size:64px">⚡</div>
-  <div style="color:#C5EF38;font-size:clamp(32px,8vw,70px);font-weight:900">
-    60 REPS COMPLETE!
-  </div>
-  <div style="font-size:clamp(20px,5vw,36px);margin-top:18px">
-    VOLTAGE FINISHER
-  </div>
-  <div id="voltageFinalTime"
-       style="font-size:clamp(28px,7vw,56px);font-weight:bold;margin-top:28px">
-  </div>
-`;
-
-document.body.appendChild(voltageFinishScreen);
-
-const voltageOriginalCount = count;
-
-count = function() {
-  voltageOriginalCount();
-
-  const target = Number($('target').value) || 60;
-
-  if (reps >= target) {
-    clearTimeout(voltageFinishTimer);
-
-    voltageFinishScreen.querySelector('#voltageFinalTime').textContent =
-      'FINAL TIME: ' + $('timer').textContent;
-
-    voltageFinishScreen.style.display = 'flex';
-
-    voltageFinishTimer = setTimeout(() => {
-      voltageFinishScreen.style.display = 'none';
-    }, 20000);
-  }
-};
-
-const voltageOriginalReset = reset;
-
-reset = function() {
-  clearTimeout(voltageFinishTimer);
-  voltageFinishScreen.style.display = 'none';
-  voltageOriginalReset();
-};
