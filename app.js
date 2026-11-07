@@ -34,7 +34,7 @@ function judge(p,now){
    const threshold=$('depth').value==='below'?.025:.055;
    deep=(baselineGap!==null && gap<=threshold && kneeAvg<150) || kneeAvg<105;
    standing=kneeAvg>145;
-   const armOK=(s,e,w)=>a(w).y<a(s).y-.07&&a(e).y<a(s).y-.015&&angle(a(s),a(e),a(w))>130;
+   const armOK=(s,e,w)=>a(w).y<a(s).y-.04&&angle(a(s),a(e),a(w))>115;
    overhead=armOK(11,13,15)&&armOK(12,14,16);
    detail=`FRONT · knees ${Math.round(kneeAvg)}° · ${baselineGap===null?'stand tall to calibrate':deep?'DEPTH ESTIMATE OK':'depth pending'} · ${overhead?'BOTH ARMS UP':'lockout pending'}`;
  }else{
@@ -58,7 +58,7 @@ function judge(p,now){
    if(deep){if(!lowSince)lowSince=now;if(now-lowSince>180){phase='low';say('DEPTH DETECTED — drive overhead')}}else lowSince=0;
  }else if(phase==='low'){
    if(upright){if(!lockedSince)lockedSince=now;if(now-lockedSince>160&&now-lastCount>800){count();lastCount=now;phase='top';lockedSince=0}}
-   else{lockedSince=0;if(standing&&!overhead&&now-lastFault>1700&&now-lastCount>800){fault('Overhead lockout not detected');lastFault=now;phase='top'}}
+   else{lockedSince=0}
  }else if(phase==='top'){
    if(!standing){phase='ready';lowSince=0;lockedSince=0}
  }
