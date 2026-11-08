@@ -97,7 +97,7 @@ if (voltageStartButton && voltageCameraStage) {
 
   voltageStartButton.style.cssText = `
     position:absolute;
-    bottom:85px;
+    bottom:240px;
     left:50%;
     transform:translateX(-50%);
     z-index:100;
