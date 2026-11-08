@@ -40,7 +40,7 @@ function judge(p,now){
  }else{
    const parallel=hip.y>=knee.y-.025,below=hip.y>=knee.y+.015;
    deep=$('depth').value==='below'?below:parallel;
-   standing=kneeAngle>158;
+   standing=kneeAngle>145;
    overhead=wr.y<sh.y-.10&&el.y<sh.y-.025&&elbowAngle>150;
    deep=deep&&kneeAngle<125;
    detail=`SIDE · knee ${Math.round(kneeAngle)}° · ${deep?'DEPTH OK':'depth pending'} · ${overhead?'LOCKOUT OK':'lockout pending'}`;
@@ -55,9 +55,9 @@ function judge(p,now){
  if(!session)return;
  const upright=standing&&overhead;
  if(phase==='ready'){
-   if(deep){if(!lowSince)lowSince=now;if(now-lowSince>180){phase='low';say('DEPTH DETECTED — drive overhead')}}else lowSince=0;
+   if(deep){if(!lowSince)lowSince=now;if(now-lowSince>100){phase='low';say('DEPTH DETECTED — drive overhead')}}else lowSince=0;
  }else if(phase==='low'){
-   if(upright){if(!lockedSince)lockedSince=now;if(now-lockedSince>160&&now-lastCount>800){count();lastCount=now;phase='top';lockedSince=0}}
+   if(upright){if(!lockedSince)lockedSince=now;if(now-lockedSince>80&&now-lastCount>800){count();lastCount=now;phase='top';lockedSince=0}}
    else{lockedSince=0}
  }else if(phase==='top'){
    if(!standing){phase='ready';lowSince=0;lockedSince=0}
